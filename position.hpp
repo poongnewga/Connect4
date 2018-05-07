@@ -65,12 +65,6 @@ namespace GameSolver { namespace Connect4 {
       // 실제로 착수한다. (moves 1 증가)
       // current_position 에는 착수된 곳 중 O/X 가 번갈아서 1/0이 된다.
       // mask는 O/X 구분하지 않고 착수된 곳이 모두 1이 된다.
-      // void play(int col)
-      // {
-      //   current_position ^= mask;
-      //   mask |= mask + bottom_mask_col(col);
-      //   moves++;
-      // }
       void play(uint64_t move)
       {
         current_position ^= mask;
@@ -134,16 +128,18 @@ namespace GameSolver { namespace Connect4 {
 
         // 그러한 강제 착수 위치가 존재한다면,
         if(forced_moves) {
-          if(forced_moves & (forced_moves - 1)) // check if there is more than one forced move
-            return 0;                           // the opponnent has two winning moves and you cannot stop him
-          else possible_mask = forced_moves;    // enforce to play the single forced move
+          // 그런데 그 강제착수가 2개 이상이라면 지는 것 말고는 방법이 없다 :(
+          if(forced_moves & (forced_moves - 1))
+            return 0;
+          // 강제착수가 1개라면 그곳을 막아야 한다.
+          else possible_mask = forced_moves;
         }
         // 상대방이 바로 이길 수 있는 수의 발판이 되지 않게끔 착수한다.
-        return possible_mask & ~(opponent_win >> 1);  // avoid to play below an opponent winning spot
+        return possible_mask & ~(opponent_win >> 1);
       }
 
       // 승리가능한 포인트를 마킹하여 카운트한 것을 moveScore라는 점수로 계산한다.
-      // 승리 포인트가 많다는 것은 그만큼 이길 확률이 높다는 의미와 같다.ㅇ
+      // 승리 포인트가 많다는 것은 그만큼 이길 확률이 높다는 의미와 같다.
       int moveScore(uint64_t move) const {
         return popcount(compute_winning_position(current_position | move, mask));
       }

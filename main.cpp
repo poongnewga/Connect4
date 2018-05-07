@@ -750,6 +750,7 @@ int main() {
     if (METHOD == 1) {
       // 서치 기반. 단 5수까지는 룰을 사용해 빠르게 착수.
       if (P.nbMoves() < 5) {
+        std::cout << "5수까지는 시간제약을 지키기 위해 Rule을 사용해 이상적인 수를 둡니다.\n";
         byRule();
       } else {
         bySearch();
